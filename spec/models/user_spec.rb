@@ -69,7 +69,7 @@ describe User do
 
   describe "when password is not present" do
     before { @user.password = @user.password_confirmation = " " }
-    it { should_no be_valid }
+    it { should_not be_valid }
   end
 
   describe "when password does not match confirmation" do
