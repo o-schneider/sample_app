@@ -25,7 +25,7 @@ describe "User pages" do
 
     describe "with invalid information" do
       it "should not create a user" do
-        expect { click_button "Sign up" }.not_to change(User, :count)
+        expect { click_signup }.not_to change(User, :count)
       end
     end
 
@@ -35,11 +35,11 @@ describe "User pages" do
       end
 
       it "should create a user" do
-        expect { click_button "Sign up" }.to change(User, :count).by(1)
+        expect { click_signup }.to change(User, :count).by(1)
       end
 
       describe "after saving the user" do
-        before { click_button "Sign up" }
+        before { click_signup }
         let(:user) { User.find_by_email('user@example.com') }
 
         it { should have_title(user.name) }

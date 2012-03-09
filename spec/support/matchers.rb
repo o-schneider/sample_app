@@ -24,13 +24,13 @@ end
 
 RSpec::Matchers.define :have_signout_link do
   match do |page|
-    page.should  have_link('Sign out', href: signout_path)
+    page.should have_link('Sign out', href: signout_path)
   end
 end
 
 RSpec::Matchers.define :have_signin_link do
   match do |page|
-    page.should  have_link('Sign in', href: signin_path)
+    page.should have_link('Sign in', href: signin_path)
   end
 end
 
@@ -38,4 +38,8 @@ RSpec::Matchers.define :have_heading do |heading|
   match do |page|
     page.should have_selector('h1', text: heading)
   end
+end
+
+RSpec::Matchers.define :click_signup do
+  click_button "Sign up"
 end
