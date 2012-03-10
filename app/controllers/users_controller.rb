@@ -1,7 +1,8 @@
 class UsersController < ApplicationController
   before_filter :signed_in_user, only: [:edit, :update, :index]
   before_filter :correct_user, only: [:edit, :update]
-  before_filter :admin_user,     only: :destroy
+  before_filter :admin_user, only: :destroy
+  before_filter :check_signed_in, only: [:new, :create]
 
   def show
     @user = User.find(params[:id])
@@ -60,5 +61,11 @@ class UsersController < ApplicationController
 
   def admin_user
     redirect_to root_path unless current_user.admin?
+  end
+
+  def check_signed_in
+    if signed_in?
+      redirect_to root_path, notice: "You ALREADY have an account, aren't you?"
+    end
   end
 end
