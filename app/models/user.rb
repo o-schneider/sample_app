@@ -14,6 +14,11 @@ class User < ActiveRecord::Base
   attr_accessible :name, :email, :password, :password_confirmation
   has_secure_password
   before_save :create_remember_token
+  has_many :microposts, dependent: :destroy
+
+  def feed
+    Micropost.where("user_id = ?", id)
+  end
 
   validates :name,
             presence: true,
@@ -30,7 +35,7 @@ class User < ActiveRecord::Base
 
   private
 
-    def create_remember_token
-      self.remember_token = SecureRandom.urlsafe_base64
-    end
+  def create_remember_token
+    self.remember_token = SecureRandom.urlsafe_base64
+  end
 end

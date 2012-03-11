@@ -36,18 +36,25 @@ module SessionsHelper
     session[:return_to] = request.fullpath
   end
 
+  def signed_in_user
+    unless signed_in?
+      store_location
+      redirect_to signin_path, notice: "Please sign in."
+    end
+  end
+
   private
 
-    def user_from_remember_token
-      remember_token = cookies[:remember_token]
-      User.find_by_remember_token(remember_token) unless remember_token.nil?
-    end
+  def user_from_remember_token
+    remember_token = cookies[:remember_token]
+    User.find_by_remember_token(remember_token) unless remember_token.nil?
+  end
 
-    def user_from_session
-      User.find_by_email(session[:user_email])
-    end
+  def user_from_session
+    User.find_by_email(session[:user_email])
+  end
 
-    def clear_return_to
-      session.delete(:return_to)
-    end
+  def clear_return_to
+    session.delete(:return_to)
+  end
 end
