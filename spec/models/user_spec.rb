@@ -27,6 +27,8 @@ describe User do
   it { should respond_to(:remember_token) }
   it { should respond_to(:admin) }
   it { should respond_to(:authenticate) }
+  it { should respond_to(:authenticate) }
+  it { should respond_to(:microposts) }
 
   it { should_not be_admin }
   it { should be_valid }
@@ -70,7 +72,7 @@ describe User do
 
   describe "when email is already taken" do
     before do
-      user_with_same_email       = @user.dup
+      user_with_same_email = @user.dup
       user_with_same_email.email = @user.email.upcase
       user_with_same_email.save
     end
