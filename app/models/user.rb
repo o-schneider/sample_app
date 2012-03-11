@@ -14,7 +14,7 @@ class User < ActiveRecord::Base
   attr_accessible :name, :email, :password, :password_confirmation
   has_secure_password
   before_save :create_remember_token
-  has_many :microposts
+  has_many :microposts, dependent: :destroy
 
   validates :name,
             presence: true,
