@@ -18,12 +18,14 @@ describe "Static pages" do
 
     describe "for signed-in users" do
       let(:user) { FactoryGirl.create(:user) }
+      before do
+        sign_in user
+      end
 
       describe "with several microposts" do
         before do
           FactoryGirl.create(:micropost, user: user, content: "Lorem ipsum")
           FactoryGirl.create(:micropost, user: user, content: "Dolor sit amet")
-          sign_in user
           visit root_path
         end
 
@@ -45,12 +47,37 @@ describe "Static pages" do
 
       describe "without any micropost" do
         before do
-          sign_in user
+          visit root_path
+        end
+        it "should not pluralize microspost" do
+          page.should have_selector('span', text: "#{user.microposts.count} micropost")
+        end
+      end
+
+      describe "pagination" do
+        before do
+          100.times do
+            FactoryGirl.create(:micropost, user: user, content: "Lorem ipsum")
+          end
           visit root_path
         end
 
-        it "should not pluralize microspost" do
-          page.should have_selector('span', text: "#{user.microposts.count} micropost")
+        let(:first_page) { user.microposts.paginate(page: 1) }
+        let(:second_page) { user.microposts.paginate(page: 2) }
+
+        it { should have_link('Next') }
+        it { should have_link('2') }
+
+        it "should list the first page of microposts" do
+          first_page.each do |micropost|
+            page.should have_selector("tr##{micropost.id}", text: micropost.content)
+          end
+        end
+
+        it "should not list the second page of microposts" do
+          second_page.each do |micropost|
+            page.should_not have_selector("tr##{micropost.id}", text: micropost.content)
+          end
         end
       end
     end
