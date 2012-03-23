@@ -18,16 +18,39 @@ describe "Static pages" do
 
     describe "for signed-in users" do
       let(:user) { FactoryGirl.create(:user) }
-      before do
-        FactoryGirl.create(:micropost, user: user, content: "Lorem ipsum")
-        FactoryGirl.create(:micropost, user: user, content: "Dolor sit amet")
-        sign_in user
-        visit root_path
+
+      describe "with several microposts" do
+        before do
+          FactoryGirl.create(:micropost, user: user, content: "Lorem ipsum")
+          FactoryGirl.create(:micropost, user: user, content: "Dolor sit amet")
+          sign_in user
+          visit root_path
+        end
+
+        it "should render the user's feed" do
+          user.feed.each do |item|
+            page.should have_selector("tr##{item.id}", text: item.content)
+          end
+        end
+
+
+        it "should have a link to the profile" do
+          page.should have_link(user.name, href: user_path(user))
+        end
+
+        it "should pluralize microsposts" do
+          page.should have_selector('span', text: "#{user.microposts.count} microposts")
+        end
       end
 
-      it "should render the user's feed" do
-        user.feed.each do |item|
-          page.should have_selector("tr##{item.id}", text: item.content)
+      describe "without any micropost" do
+        before do
+          sign_in user
+          visit root_path
+        end
+
+        it "should not pluralize microspost" do
+          page.should have_selector('span', text: "#{user.microposts.count} micropost")
         end
       end
     end
